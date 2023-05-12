@@ -18,6 +18,7 @@ class _SignupWidgetState extends State<SignupWidget> {
   final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
   @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
@@ -44,6 +45,15 @@ class _SignupWidgetState extends State<SignupWidget> {
               decoration: const InputDecoration(labelText: 'password'),
               autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (value) => value != null && value.length < 6 ? 'Enter min. 6 characters' : null,
+            ),
+            const SizedBox(height: 4),
+            TextFormField(
+              controller: confirmPasswordController,
+              textInputAction: TextInputAction.next,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: 'Confirm password'),
+              autovalidateMode: AutovalidateMode.onUserInteraction,
+              validator: (value) => value != passwordController.text.trim() ? 'Password is not matching' : null,
             ),
             const SizedBox(height: 20),
             ElevatedButton.icon(
@@ -79,7 +89,12 @@ class _SignupWidgetState extends State<SignupWidget> {
         barrierDismissible: false,
         builder: (context)=> const Center(child: CircularProgressIndicator()));
     try{
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text.trim(), password: passwordController.text.trim());
+      if(passwordController.text.trim() == confirmPasswordController.text.trim()){
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(email: emailController.text.trim(), password: passwordController.text.trim());
+      }
+      else{
+        Util.showSnackBar('Password is not matching');
+      }
     } on FirebaseAuthException catch (e){
       print(e);
       Util.showSnackBar(e.message);
