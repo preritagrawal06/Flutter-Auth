@@ -1,9 +1,12 @@
 import 'package:auth/Utils/Utils.dart';
 import 'package:auth/widgets/forgotPassword.dart';
+import 'package:auth/widgets/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:auth/main.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 class LoginWidget extends StatefulWidget {
   final VoidCallback onClickedSignUp;
@@ -66,6 +69,15 @@ class _LoginWidgetState extends State<LoginWidget> {
                 )
               ]
             ),
+          ),
+          SizedBox(height: 20,),
+          ElevatedButton.icon(
+              onPressed: (){
+                final provider = Provider.of<GoogleSignInProvider>(context, listen: false);
+                provider.googleLogin();
+              },
+              icon: FaIcon(FontAwesomeIcons.google),
+              label: Text('SignIn with Google')
           )
         ],
       ),
